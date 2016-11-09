@@ -1,0 +1,3 @@
+- https://github.com/whitby/vcapi
+- https://github.com/digitalocean/godo
+- https://github.com/google/go-github
