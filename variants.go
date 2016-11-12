@@ -1,4 +1,4 @@
-package main
+package omniboost
 
 type Variant struct {
 	Sku    string

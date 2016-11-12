@@ -1,4 +1,4 @@
-package main
+package omniboost
 
 type Image struct {
 }
