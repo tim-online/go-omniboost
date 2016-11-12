@@ -2,10 +2,27 @@ package omniboost
 
 import "net/url"
 
-const dropletBasePath = "v1/products"
+const productsBasePath = "v1/products"
 
 type ProductsService struct {
 	client *Client
+}
+
+// List all products
+func (s *ProductsService) List() ([]Product, *Response, error) {
+	path := productsBasePath
+	req, err := s.client.NewRequest("GET", path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	root := new(productsRoot)
+	resp, err := s.client.Do(req, root)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return root.Products, resp, err
 }
 
 // Create product
@@ -14,7 +31,7 @@ func (p *ProductsService) Create(createRequest *ProductCreateRequest) (*Product,
 		return nil, nil, NewArgError("createRequest", "cannot be nil")
 	}
 
-	path := dropletBasePath
+	path := productsBasePath
 
 	requestWithAttributes := struct {
 		Attributes *ProductCreateRequest
@@ -36,6 +53,12 @@ func (p *ProductsService) Create(createRequest *ProductCreateRequest) (*Product,
 	return root.Product, resp, err
 }
 
+// ProductsRoot represents a Product root
+type productsRoot struct {
+	Products []Product `json:"products"`
+	// Links   *Links   `json:"links,omitempty"`
+}
+
 // ProductRoot represents a Product root
 type productRoot struct {
 	Product *Product `json:"product"`
@@ -50,6 +73,7 @@ type ProductCreateRequest struct {
 }
 
 type Product struct {
+	ID          int
 	Name        string
 	url         *url.URL
 	description string
