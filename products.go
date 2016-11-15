@@ -1,6 +1,6 @@
 package omniboost
 
-import "net/url"
+import "github.com/tim-online/go-omniboost/utils"
 
 const productsBasePath = "v1/products"
 
@@ -55,27 +55,34 @@ func (p *ProductsService) Create(createRequest *ProductCreateRequest) (*Product,
 
 // ProductsRoot represents a Product root
 type productsRoot struct {
-	Products []Product `json:"products"`
-	// Links   *Links   `json:"links,omitempty"`
+	Products []Product `json:"data"`
+	Meta     *Meta     `json:"meta,omitempty"`
 }
 
 // ProductRoot represents a Product root
 type productRoot struct {
 	Product *Product `json:"product"`
-	// Links   *Links   `json:"links,omitempty"`
+	Meta    *Meta    `json:"meta,omitempty"`
+}
+
+func newProductRoot() *productRoot {
+	return &productRoot{
+		Product: &Product{},
+		Meta:    newMeta(),
+	}
 }
 
 type ProductCreateRequest struct {
 	Name        string
-	url         *url.URL
-	description string
-	variant     []Variant
+	Url         *utils.URL
+	Description string
+	Variant     []Variant
 }
 
 type Product struct {
-	ID          int
-	Name        string
-	url         *url.URL
-	description string
-	variant     []Variant
+	ID          int        `jsonapi:"primary,products"`
+	Name        string     `jsonapi:"attr,name"`
+	Url         *utils.URL `jsonapi:"attr,url"`
+	Description string     `jsonapi:"attr,description"`
+	Variants    []Variant  `jsonapi:"relation,variants"`
 }
